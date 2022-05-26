@@ -19,11 +19,11 @@ class databaseWorker:
         data_for_save.to_sql(tabel_name, con=self.con, index=False)
 
 
-    def giveDfOnTable(self, table_name: str) -> DataFrame:
+    def giveValueOnTable(self, table_name: str) -> list:
         """
         На вход принимает имя таблицы
         Возвращает массив датафрейм со всеми данными 
         """
         sql = "SELECT * FROM " + table_name
         df = read_sql(sql=sql, con=self.con)
-        return df
+        return df.values

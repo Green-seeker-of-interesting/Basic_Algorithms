@@ -11,6 +11,6 @@ def passwordHasher(password : str, using_salt : bool = True)-> int:
     return out
 
 
-def passwordEqualsHasher(pas_1 : str, pas_2 : str) -> bool:
-    """Сравнивает два пароля"""
-    return passwordHasher(pas_1) == passwordHasher(pas_2)
+def passwordEqualsHasher(password : str, password_from_db : int) -> bool:
+    """Сравнивает введённый пороль с солью в БД"""
+    return int(passwordHasher(password=password, using_salt=True), 16) == password_from_db 
