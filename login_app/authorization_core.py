@@ -38,8 +38,8 @@ class authorizationCore:
 
         return out_flag
 
-
-    def binary_search(self, array: list, element: str) -> int:
+    @staticmethod
+    def binary_search(array: list, element: str) -> int:
         """
         Бинарный поиск
         Вход массив и искомый элемент 

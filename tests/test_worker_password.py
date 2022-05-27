@@ -1,5 +1,8 @@
 import unittest
 import password_worker
+from hashlib import md5
+from password_worker.password_hasher import passwordEqualsHasher, passwordHasher
+from setting import SALT
 
 class TestGeneratorPassword(unittest.TestCase):
     """Набор тестов для генератора пароля"""
@@ -30,3 +33,27 @@ class TestPasswordValidationChecks(unittest.TestCase):
         self.assertFalse(password_worker.passwordValidator("1a_oooooooooo"))
         self.assertFalse(password_worker.passwordValidator("1A_OOOOOOOOOO"))
         self.assertFalse(password_worker.passwordValidator("1aAoooooooooo"))
+
+
+class TestHesherPassword(unittest.TestCase):
+    "Проверка функций кеширования и сравнения паролей"
+
+    def test_password_hashr_with_salt(self):
+        password_test = '6376hjdfs6@bnvasdnf'
+        etalon = md5(password_test.encode() + SALT).hexdigest()  
+        self.assertEqual(etalon, passwordHasher(password_test, using_salt=True))
+
+    def test_password_hashr(self):
+        password_test = '6376hjdfs6@bnvasdnf'
+        etalon = md5(password_test.encode()).hexdigest()  
+        self.assertEqual(etalon, passwordHasher(password_test, using_salt=False))
+    
+    def test_password_equals_hasher_good(self):
+        password_test = '6376hjdfs6@bnvasdnf'
+        self.assertTrue(passwordEqualsHasher(password=password_test, password_from_db=int(passwordHasher(password_test),16)))
+
+    def test_password_equals_hasher_bed(self):
+        password_test = '6376hjdfs6@bnvasdnf'
+        self.assertFalse(passwordEqualsHasher(password="password_test", password_from_db=int(passwordHasher(password_test),16)))
+
+

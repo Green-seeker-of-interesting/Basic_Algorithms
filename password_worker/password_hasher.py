@@ -12,5 +12,8 @@ def passwordHasher(password : str, using_salt : bool = True)-> int:
 
 
 def passwordEqualsHasher(password : str, password_from_db : int) -> bool:
-    """Сравнивает введённый пороль с солью в БД"""
+    """
+    Сравнивает введённый пороль с солью в БД
+    Внимание соль в данном случаи используется по умолчанию
+    """
     return int(passwordHasher(password=password, using_salt=True), 16) == password_from_db 
