@@ -52,7 +52,7 @@ class TestHesherPassword(unittest.TestCase):
         password_test = '6376hjdfs6@bnvasdnf'
         self.assertTrue(passwordEqualsHasher(password=password_test, password_from_db=int(passwordHasher(password_test),16)))
 
-    def test_password_equals_hasher_bed(self):
+    def test_password_equals_hasher_bad(self):
         password_test = '6376hjdfs6@bnvasdnf'
         self.assertFalse(passwordEqualsHasher(password="password_test", password_from_db=int(passwordHasher(password_test),16)))
 

@@ -1,6 +1,5 @@
 import unittest
-
-import pandas
+from generatot_test_data import generatorMailsAndPasswords, generatorMaPaWithHesh
 from login_app import *
 import os
 from pandas import DataFrame
@@ -35,7 +34,9 @@ class TestAuthorizationCore(unittest.TestCase):
         interfeise = authorizationInterface()
         self.core = authorizationCore(interfeise, "test_database.db")
         #Cсгенерировать тут тестовые данные и залить их в базу. 
-
+        self.test_list_users = generatorMaPaWithHesh(generatorMailsAndPasswords(number_new_records=10,is_sorted=True))
+        df = DataFrame(self.test_list_users, columns=["email", "hesh", "open_password"])
+        self.core.db.saveDataFrame(df,tabel_name="test_1")      
         return super().setUp()
 
     def tearDown(self) -> None:
@@ -53,6 +54,18 @@ class TestAuthorizationCore(unittest.TestCase):
         self.assertEqual(self.core.binary_search(test_list,9), len(test_list) - 1)
         self.assertIsNone(self.core.binary_search(test_list,-1))
 
-
+    #тест основного воркера ядра
     def test_main_worker_authorization_core(self):
-        pass
+        self.core.authorization_interface.user_login = self.test_list_users[1][0] # берём логин из списка
+        self.core.authorization_interface.user_password = self.test_list_users[1][2]# берём его открытиый пароль
+        self.assertTrue(self.core.mainWorker(name_tabel="test_1"))
+
+    def test_main_worker_authorization_core_bad_password(self):
+        self.core.authorization_interface.user_login = self.test_list_users[1][0] # берём логин из списка
+        self.core.authorization_interface.user_password = "12345"
+        self.assertFalse(self.core.mainWorker(name_tabel="test_1"))
+
+    def test_main_worker_authorization_core_bad_login(self):
+        self.core.authorization_interface.user_login = "wuliw.ru@mail.ru"
+        self.core.authorization_interface.user_password = self.test_list_users[1][2]
+        self.assertFalse(self.core.mainWorker(name_tabel="test_1"))
